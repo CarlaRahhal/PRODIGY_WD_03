@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tic Tac Toe</title>
+        <style>
+            body, html{
+                background-color: darkgreen;
+                color: white;
+            }
+            table{
+                border-collapse: collapse;
+                width: 300px;
+                height: 300px;
+            }
+            .tr1, .tr2{
+                border-bottom: 2px solid black;
+            }
+            td{
+                border-right: 2px solid black;
+                padding: 0;
+            }
+            .c{
+                border-right: 0px;
+            }
+            .btn{
+                text-align: center;
+                height: 100px;
+                width: 100px;
+                font-size: 30px;
+                background-color: darkgreen;
+                border: 0;
+                color: white;
+            }
+            button{
+                text-align: center;
+            }
+            .start{
+                font-size: 30px;
+                width:auto;
+                height: auto;
+                background-color: whitesmoke;
+            }
+            button:hover{
+                background-color:lawngreen;
+            }
+        </style>
+    </head>
+    <body align="center">
+        <h1>Tic Tac Toe</h1>
+        <table class="tab" align="center">
+            <tr class="tr1">
+                <td id="cell00"><button class="btn" id="bt00">Press</button></td>
+                <td id="cell01"><button class="btn" id="bt01">The</button></td>
+                <td id="cell02" class="c"><button class="btn" id="bt02">Start</button></td>
+            </tr>
+            <tr class="tr2">
+                <td id="cell10"><button class="btn" id="bt10">Button</button></td>
+                <td id="cell11"><button class="btn" id="bt11">To</button></td>
+                <td id="cell12" class="c"><button class="btn" id="bt12">Start</button></td>
+            </tr>
+            <tr class="tr3">
+                <td id="cell20"><button class="btn" id="bt20"></button></td>
+                <td id="cell21"><button class="btn" id="bt21"></button></td>
+                <td id="cell22" class="c"><button class="btn" id="bt22"></button></td>
+            </tr>
+        </table><br><br>
+        <button id="startBtn" class="start">Start</button><br><br>
+        <h3 id="resText"></h3>
+        <script>
+            let player = 'X';
+            let start = document.getElementById("startBtn");
+            let resText = document.getElementById("resText");
+            let gameEnded = false;
+
+            let cell00 = document.getElementById("bt00");
+            let cell01 = document.getElementById("bt01");
+            let cell02 = document.getElementById("bt02");
+            let cell10 = document.getElementById("bt10");
+            let cell11 = document.getElementById("bt11");
+            let cell12 = document.getElementById("bt12");
+            let cell20 = document.getElementById("bt20");
+            let cell21 = document.getElementById("bt21");
+            let cell22 = document.getElementById("bt22");
+
+            function enableButtons(){
+                cell00.disabled = false;
+                cell01.disabled = false;
+                cell02.disabled = false;
+                cell10.disabled = false;
+                cell11.disabled = false;
+                cell12.disabled = false;
+                cell20.disabled = false;
+                cell21.disabled = false;
+                cell22.disabled = false;
+            }
+            function disableButtons(){
+                cell00.disabled = true;
+                cell01.disabled = true;
+                cell02.disabled = true;
+                cell10.disabled = true;
+                cell11.disabled = true;
+                cell12.disabled = true;
+                cell20.disabled = true;
+                cell21.disabled = true;
+                cell22.disabled = true;
+            }
+
+            disableButtons();
+
+            function buildArray(){
+                return [[cell00.innerHTML, cell01.innerHTML, cell02.innerHTML], [cell10.innerHTML, cell11.innerHTML, cell12.innerHTML], 
+                [cell20.innerHTML, cell21.innerHTML, cell22.innerHTML]];
+            }
+
+            function checkWinner(array, player, i, j){
+                if (array[i][0] === player && array[i][1] === player && array[i][2] === player) {
+                    return player;
+                }
+                if (array[0][j] === player && array[1][j] === player && array[2][j] === player) {
+                    return player;
+                }
+                if (i === j && array[0][0] === player && array[1][1] === player && array[2][2] === player) {
+                    return player;
+                }
+                if (i + j === 2 && array[0][2] === player && array[1][1] === player && array[2][0] === player) {
+                    return player;
+                }
+                let tie = true;
+                for(let x=0; x<3; x++){
+                    for(let y=0; y<3; y++){
+                        if(array[x][y] === ''){
+                            tie = false;
+                            break;
+                        }
+                    }
+                    if(tie == false) break;
+                }
+                if(tie == true) return "Tie";
+                return "No Winner";
+            }
+
+            function handleClick(row, col, cell){
+                if(gameEnded==true || cell.innerHTML!='') return;
+                
+                cell.innerHTML = player;
+                let arr = buildArray();
+                let result = checkWinner(arr, player, row, col);
+                if(result === "Tie"){
+                    resText.innerHTML = "It's a Tie!";
+                    gameEnded = true;
+                    disableButtons();
+                }
+                else if(result === player){
+                    resText.innerHTML = "Player "+player+" won!";
+                    gameEnded = true;
+                    disableButtons();
+                }
+                else player=='X' ? player='O' : player='X';
+            }
+
+            cell00.addEventListener('click', function(){ handleClick(0, 0, cell00); });
+            cell01.addEventListener('click', function(){ handleClick(0, 1, cell01); });
+            cell02.addEventListener('click', function(){ handleClick(0, 2, cell02); });
+            cell10.addEventListener('click', function(){ handleClick(1, 0, cell10); });
+            cell11.addEventListener('click', function(){ handleClick(1, 1, cell11); });
+            cell12.addEventListener('click', function(){ handleClick(1, 2, cell12); });
+            cell20.addEventListener('click', function(){ handleClick(2, 0, cell20); });
+            cell21.addEventListener('click', function(){ handleClick(2, 1, cell21); });
+            cell22.addEventListener('click', function(){ handleClick(2, 2, cell22); });
+
+            start.addEventListener('click', function(){
+                player = 'X';
+                gameEnded = false;
+                resText.innerHTML = "";
+                cell00.innerHTML = '';
+                cell01.innerHTML = '';
+                cell02.innerHTML = '';
+                cell10.innerHTML = '';
+                cell11.innerHTML = '';
+                cell12.innerHTML = '';
+                cell20.innerHTML = '';
+                cell21.innerHTML = '';
+                cell22.innerHTML = '';
+
+                cell00.style.fontSize = "40px";
+                cell01.style.fontSize = "40px";
+                cell02.style.fontSize = "40px";
+                cell10.style.fontSize = "40px";
+                cell11.style.fontSize = "40px";
+                cell12.style.fontSize = "40px";
+                cell20.style.fontSize = "40px";
+                cell21.style.fontSize = "40px";
+                cell22.style.fontSize = "40px";
+                cell00.style.backgroundColor = "";
+                enableButtons();
+            });
+        </script>
+    </body>
+</html>
